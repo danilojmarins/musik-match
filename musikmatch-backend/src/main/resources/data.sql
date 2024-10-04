@@ -1,0 +1,20 @@
+INSERT INTO instruments (id, name) VALUES (1, 'Voz');
+INSERT INTO instruments (id, name) VALUES (2, 'Guitarra');
+INSERT INTO instruments (id, name) VALUES (3, 'Baixo');
+INSERT INTO instruments (id, name) VALUES (4, 'Violão');
+INSERT INTO instruments (id, name) VALUES (5, 'Bateria');
+INSERT INTO instruments (id, name) VALUES (6, 'Teclado');
+INSERT INTO instruments (id, name) VALUES (7, 'Piano');
+INSERT INTO instruments (id, name) VALUES (8, 'Violino');
+
+INSERT INTO genres (id, name) VALUES (1, 'Rock');
+INSERT INTO genres (id, name) VALUES (2, 'Metal');
+INSERT INTO genres (id, name) VALUES (3, 'MPB');
+INSERT INTO genres (id, name) VALUES (4, 'Death Metal');
+INSERT INTO genres (id, name) VALUES (5, 'Black Metal');
+INSERT INTO genres (id, name) VALUES (6, 'Indie');
+INSERT INTO genres (id, name) VALUES (7, 'Alternativo');
+INSERT INTO genres (id, name) VALUES (8, 'Sertanejo');
+INSERT INTO genres (id, name) VALUES (9, 'Folk');
+INSERT INTO genres (id, name) VALUES (10, 'Funk');
+INSERT INTO genres (id, name) VALUES (11, 'Pop');

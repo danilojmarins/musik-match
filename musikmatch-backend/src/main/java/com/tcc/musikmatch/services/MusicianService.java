@@ -3,6 +3,8 @@ package com.tcc.musikmatch.services;
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
 import com.tcc.musikmatch.dtos.MusicianRecordDTO;
 import com.tcc.musikmatch.enums.Role;
+import com.tcc.musikmatch.exceptions.EntityNotFoundException;
+import com.tcc.musikmatch.models.Genre;
 import com.tcc.musikmatch.models.Musician;
 import com.tcc.musikmatch.models.MusicianInstrument;
 import com.tcc.musikmatch.models.User;
@@ -61,14 +63,24 @@ public class MusicianService {
             musicianInstrument.setMusician(musician);
             musicianInstrument.setInstrument(instrumentRepository
                 .findById(instrument.id())
-                .orElseThrow(() -> new RuntimeException("Instrumento não encontrado."))
+                .orElseThrow(() -> new EntityNotFoundException("Instrumento não encontrado."))
             );
             musicianInstrument.setProficiency(instrument.proficiency());
             musicianInstruments.add(musicianInstrument);
         });
 
+        Set<Genre> genres = new HashSet<>();
+
+        musicianRecordDTO.genresIds().forEach(id -> {
+            Genre genre = genreRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Gênero não encontrado."))
+            ;
+            genres.add(genre);
+        });
+
         musician.setInstruments(musicianInstruments);
-        musician.setGenres(new HashSet<>(genreRepository.findAllById(musicianRecordDTO.genresIds())));
+        musician.setGenres(genres);
         musician.setUser(user);
         user.setMusician(musician);
         userRepository.save(user);

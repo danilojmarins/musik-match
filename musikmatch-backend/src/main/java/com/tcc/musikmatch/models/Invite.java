@@ -19,12 +19,12 @@ public class Invite implements Serializable {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "from")
-    private User from;
+    @JoinColumn(name = "fromUser")
+    private User fromUser;
 
     @ManyToOne
-    @JoinColumn(name = "to")
-    private User to;
+    @JoinColumn(name = "toUser")
+    private User toUser;
 
     @Column(nullable = false)
     private String message;
@@ -40,20 +40,20 @@ public class Invite implements Serializable {
         this.id = id;
     }
 
-    public User getFrom() {
-        return from;
+    public User getFromUser() {
+        return fromUser;
     }
 
-    public void setFrom(User from) {
-        this.from = from;
+    public void setFromUser(User fromUser) {
+        this.fromUser = fromUser;
     }
 
-    public User getTo() {
-        return to;
+    public User getToUser() {
+        return toUser;
     }
 
-    public void setTo(User to) {
-        this.to = to;
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
     }
 
     public String getMessage() {

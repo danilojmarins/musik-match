@@ -1,0 +1,23 @@
+services:
+  musikmatch_db:
+    container_name: musikmatch_pg_sql
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: musikmatch
+    volumes:
+      - musikmatch_db:/var/lib/postgresql/data
+    ports:
+      - 5532:5432
+    networks:
+      - musikmatch_net
+    restart: unless-stopped
+
+networks:
+  musikmatch_net:
+    driver: bridge
+
+volumes:
+  musikmatch_db:

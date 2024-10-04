@@ -21,8 +21,7 @@ public class Instrument implements Serializable {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "instrument", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "instrument", cascade = { CascadeType.ALL })
     private Set<MusicianInstrument> musicians = new HashSet<>();
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

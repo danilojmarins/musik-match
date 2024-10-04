@@ -3,7 +3,8 @@ package com.tcc.musikmatch.dtos;
 import com.tcc.musikmatch.validation.DateValidation;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 public record MusicianRecordDTO(
@@ -28,17 +29,17 @@ public record MusicianRecordDTO(
         String bio,
 
         @NotNull(message = "lat não pode ser NULL")
-        @Min(value = 0, message = "lat não pode ser menor que 0")
-        @Max(value = 90, message = "lat não pode ser maior que 90")
-        double lat,
+        @DecimalMin(value = "0.0", message = "lat não pode ser menor que 0")
+        @DecimalMax(value = "90.0", message = "lat não pode ser maior que 90")
+        BigDecimal lat,
 
         @NotNull(message = "lon não pode ser NULL")
-        @Min(value = 0, message = "lon não pode ser menor que 0")
-        @Max(value = 180, message = "lon não pode ser maior que 180")
-        double lon,
+        @DecimalMin(value = "0.0", message = "lon não pode ser menor que 0")
+        @DecimalMax(value = "180.0", message = "lon não pode ser maior que 180")
+        BigDecimal lon,
 
         @DateValidation(message = "birthdate deve ser uma data válida, no formato: dd/MM/yyyy")
-        LocalDate birthdate,
+        Date birthdate,
 
         @NotNull(message = "zip_code não pode ser NULL")
         @NotBlank(message = "zip_code é um campo obrigatório")
@@ -46,11 +47,9 @@ public record MusicianRecordDTO(
         String zip_code,
 
         @NotNull(message = "instruments não pode ser NULL")
-        @NotBlank(message = "instruments é um campo obrigatório")
         Set<MusicianInstrumentRecordDTO> instruments,
 
         @NotNull(message = "genresIds não pode ser NULL")
-        @NotBlank(message = "genresIds é um campo obrigatório")
         Set<Integer> genresIds
 ) {
 }

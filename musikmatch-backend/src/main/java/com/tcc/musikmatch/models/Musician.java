@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,6 +18,9 @@ public class Musician implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -29,18 +33,18 @@ public class Musician implements Serializable {
     private String bio;
 
     @Column(nullable = false)
-    private double lat;
+    private BigDecimal lat;
 
     @Column(nullable = false)
-    private double lon;
+    private BigDecimal lon;
 
     @Column
-    private LocalDate birthdate;
+    private Date birthdate;
 
     @Column(nullable = false)
     private String zip_code;
 
-    @OneToMany(mappedBy = "musician")
+    @OneToMany(mappedBy = "musician", cascade = { CascadeType.ALL})
     private Set<MusicianInstrument> instruments = new HashSet<>();
 
     @ManyToMany
@@ -67,27 +71,27 @@ public class Musician implements Serializable {
         this.bio = bio;
     }
 
-    public double getLat() {
+    public BigDecimal getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(BigDecimal lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public BigDecimal getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(BigDecimal lon) {
         this.lon = lon;
     }
 
-    public LocalDate getBirthdate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(LocalDate birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 
