@@ -1,10 +1,10 @@
 package com.tcc.musikmatch.dtos;
 
 import com.tcc.musikmatch.enums.BandType;
-import com.tcc.musikmatch.validation.DateValidation;
+import com.tcc.musikmatch.validation.EnumValidation;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.Set;
 
 public record BandRecordDTO(
@@ -29,29 +29,27 @@ public record BandRecordDTO(
         String bio,
 
         @NotNull(message = "lat não pode ser NULL")
-        @Min(value = 0, message = "lat não pode ser menor que 0")
-        @Max(value = 90, message = "lat não pode ser maior que 90")
-        double lat,
+        @DecimalMin(value = "0.0", message = "lat não pode ser menor que 0")
+        @DecimalMax(value = "90.0", message = "lat não pode ser maior que 90")
+        BigDecimal lat,
 
         @NotNull(message = "lon não pode ser NULL")
-        @Min(value = 0, message = "lon não pode ser menor que 0")
-        @Max(value = 180, message = "lon não pode ser maior que 180")
-        double lon,
+        @DecimalMin(value = "0.0", message = "lon não pode ser menor que 0")
+        @DecimalMax(value = "180.0", message = "lon não pode ser maior que 180")
+        BigDecimal lon,
 
         @NotNull(message = "city não pode ser NULL")
         @NotBlank(message = "city é um campo obrigatório")
         String city,
 
-        @NotNull(message = "city não pode ser NULL")
-        @NotBlank(message = "city é um campo obrigatório")
-        BandType type,
+        @NotNull(message = "type não pode ser NULL")
+        @EnumValidation(enumClass = BandType.class, message = "Tipo de banda inválido.")
+        String type,
 
         @NotNull(message = "instrumentsIds não pode ser NULL")
-        @NotBlank(message = "instrumentsIds é um campo obrigatório")
         Set<Integer> instrumentsIds,
 
         @NotNull(message = "genresIds não pode ser NULL")
-        @NotBlank(message = "genresIds é um campo obrigatório")
         Set<Integer> genresIds
 ) {
 }

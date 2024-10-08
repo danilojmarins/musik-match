@@ -2,6 +2,7 @@ package com.tcc.musikmatch.services;
 
 import com.tcc.musikmatch.dtos.AuthenticationRequestDTO;
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
+import com.tcc.musikmatch.exceptions.UnauthorizedException;
 import com.tcc.musikmatch.models.User;
 import com.tcc.musikmatch.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -34,7 +35,10 @@ public class AuthenticationService {
             )
         );
 
-        User user = userRepository.findByEmail(request.email()).orElseThrow();
+        User user = userRepository
+            .findByEmail(request.email())
+            .orElseThrow(() -> new UnauthorizedException("Não autorizado. Usuário não encontrado."))
+        ;
         String jwtToken = jwtService.generateJwtToken(user);
         return new AuthenticationResponseDTO(jwtToken);
     }

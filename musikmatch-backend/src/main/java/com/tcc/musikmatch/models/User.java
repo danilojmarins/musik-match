@@ -4,17 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tcc.musikmatch.enums.Role;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.Instant;
 import java.util.*;
 
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails {
 
     @Id
@@ -31,7 +30,7 @@ public class User implements UserDetails {
     private Role role;
 
     @CreatedDate
-    private Instant createdAt;
+    private Date createdAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Musician musician;
@@ -67,11 +66,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Instant getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

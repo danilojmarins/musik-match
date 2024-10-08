@@ -1,6 +1,8 @@
 package com.tcc.musikmatch.advices;
 
+import com.tcc.musikmatch.exceptions.EntityAlreadyExistsException;
 import com.tcc.musikmatch.exceptions.EntityNotFoundException;
+import com.tcc.musikmatch.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +26,22 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public Map<String, String> handleEntityNotFoundError(EntityNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public Map<String, String> handleUnauthorizedError(UnauthorizedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public Map<String, String> handleEntityAlreadyExistsError(EntityAlreadyExistsException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return error;

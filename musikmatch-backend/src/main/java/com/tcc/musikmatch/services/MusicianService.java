@@ -3,6 +3,7 @@ package com.tcc.musikmatch.services;
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
 import com.tcc.musikmatch.dtos.MusicianRecordDTO;
 import com.tcc.musikmatch.enums.Role;
+import com.tcc.musikmatch.exceptions.EntityAlreadyExistsException;
 import com.tcc.musikmatch.exceptions.EntityNotFoundException;
 import com.tcc.musikmatch.models.Genre;
 import com.tcc.musikmatch.models.Musician;
@@ -43,6 +44,11 @@ public class MusicianService {
 
     @Transactional
     public AuthenticationResponseDTO createMusician(MusicianRecordDTO musicianRecordDTO) {
+        boolean userAlreadyExists = userRepository.findByEmail(musicianRecordDTO.email()).isPresent();
+        if (userAlreadyExists) {
+            throw new EntityAlreadyExistsException("Já existe um usuário cadastrado com o e-mail informado.");
+        }
+
         User user = new User();
         user.setEmail(musicianRecordDTO.email());
         user.setPassword(passwordEncoder.encode(musicianRecordDTO.password()));
