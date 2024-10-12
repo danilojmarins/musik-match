@@ -1,4 +1,14 @@
 services:
+  react_native_app:
+    container_name: musikmatch_app
+    image: node:20-alpine
+    command: sh -c "npm install && npx expo start"
+    ports:
+      - 127.0.0.1:3000:8081
+    working_dir: /musikmatch-app
+    volumes:
+      - ./musikmatch-app:/musikmatch-app
+
   musikmatch_db:
     container_name: musikmatch_pg_sql
     image: postgres
