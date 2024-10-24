@@ -1,41 +1,22 @@
 import styled from "styled-components/native";
 
-export const LoginContainer = styled.View`
+export const RegisterContainer = styled.View`
   background-color: ${(props) => props.theme.colors.primary};
   flex: 1;
-  align-items: center;
 `;
 
 export const AppTitleContainer = styled.View`
   margin: auto;
   position: relative;
-  bottom: 25%;
+  bottom: 30%;
 `;
 
-export const AppTitle1 = styled.Text`
-  margin: auto;
-  color: ${(props) => props.theme.colors.white};
-  font-size: 72px;
-  position: relative;
-  right: 32px;
-  font-family: ${(props) => props.theme.fonts.appTitle};
-`;
-
-export const AppTitle2 = styled.Text`
-  margin: auto;
-  color: ${(props) => props.theme.colors.white};
-  font-size: 72px;
-  position: relative;
-  left: 32px;
-  font-family: ${(props) => props.theme.fonts.appTitle};
-`;
-
-export const LoginFormContainer = styled.View`
+export const RegisterFormContainer = styled.View`
   background-color: ${(props) => props.theme.colors.white};
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 50%;
+  height: 60%;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
 `;

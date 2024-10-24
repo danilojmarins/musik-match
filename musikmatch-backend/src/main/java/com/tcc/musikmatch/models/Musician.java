@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -38,11 +37,11 @@ public class Musician implements Serializable {
     @Column(nullable = false)
     private BigDecimal lon;
 
-    @Column
-    private Date birthdate;
+    @Column(nullable = false)
+    private String state;
 
     @Column(nullable = false)
-    private String zip_code;
+    private String city;
 
     @OneToMany(mappedBy = "musician", cascade = { CascadeType.ALL})
     private Set<MusicianInstrument> instruments = new HashSet<>();
@@ -87,20 +86,20 @@ public class Musician implements Serializable {
         this.lon = lon;
     }
 
-    public Date getBirthdate() {
-        return birthdate;
+    public String getState() {
+        return state;
     }
 
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public String getZip_code() {
-        return zip_code;
+    public String getCity() {
+        return city;
     }
 
-    public void setZip_code(String zip_code) {
-        this.zip_code = zip_code;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public Set<MusicianInstrument> getInstruments() {

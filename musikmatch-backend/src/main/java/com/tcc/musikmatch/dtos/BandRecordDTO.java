@@ -38,6 +38,10 @@ public record BandRecordDTO(
         @DecimalMax(value = "180.0", message = "lon não pode ser maior que 180")
         BigDecimal lon,
 
+        @NotNull(message = "state não pode ser NULL")
+        @NotBlank(message = "state é um campo obrigatório")
+        String state,
+
         @NotNull(message = "city não pode ser NULL")
         @NotBlank(message = "city é um campo obrigatório")
         String city,

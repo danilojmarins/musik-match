@@ -56,6 +56,7 @@ public class BandService {
         Band band = new Band();
         band.setName(bandRecordDTO.name());
         band.setBio(bandRecordDTO.bio());
+        band.setState(bandRecordDTO.state());
         band.setCity(bandRecordDTO.city());
         band.setType(BandType.valueOf(bandRecordDTO.type()));
         band.setLat(bandRecordDTO.lat());

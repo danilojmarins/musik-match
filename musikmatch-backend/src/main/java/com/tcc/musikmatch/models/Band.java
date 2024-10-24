@@ -39,6 +39,9 @@ public class Band implements Serializable {
     private BigDecimal lon;
 
     @Column(nullable = false)
+    private String state;
+
+    @Column(nullable = false)
     private String city;
 
     @Column(nullable = false)
@@ -91,6 +94,14 @@ public class Band implements Serializable {
 
     public void setLon(BigDecimal lon) {
         this.lon = lon;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getCity() {

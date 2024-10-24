@@ -57,8 +57,8 @@ public class MusicianService {
         Musician musician = new Musician();
         musician.setName(musicianRecordDTO.name());
         musician.setBio(musicianRecordDTO.bio());
-        musician.setBirthdate(musicianRecordDTO.birthdate());
-        musician.setZip_code(musicianRecordDTO.zip_code());
+        musician.setState(musicianRecordDTO.state());
+        musician.setCity(musicianRecordDTO.city());
         musician.setLat(musicianRecordDTO.lat());
         musician.setLon(musicianRecordDTO.lon());
 

@@ -1,10 +1,8 @@
 package com.tcc.musikmatch.dtos;
 
-import com.tcc.musikmatch.validation.DateValidation;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Set;
 
 public record MusicianRecordDTO(
@@ -38,13 +36,13 @@ public record MusicianRecordDTO(
         @DecimalMax(value = "180.0", message = "lon não pode ser maior que 180")
         BigDecimal lon,
 
-        @DateValidation(message = "birthdate deve ser uma data válida, no formato: dd/MM/yyyy")
-        Date birthdate,
+        @NotNull(message = "state não pode ser NULL")
+        @NotBlank(message = "state é um campo obrigatório")
+        String state,
 
-        @NotNull(message = "zip_code não pode ser NULL")
-        @NotBlank(message = "zip_code é um campo obrigatório")
-        @Size(min = 8, max = 8, message = "zip_code deve ser 8 dígitos")
-        String zip_code,
+        @NotNull(message = "city não pode ser NULL")
+        @NotBlank(message = "city é um campo obrigatório")
+        String city,
 
         @NotNull(message = "instruments não pode ser NULL")
         Set<MusicianInstrumentRecordDTO> instruments,

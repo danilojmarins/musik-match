@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components/native";
 import Login from "./login";
 import { useFonts } from 'expo-font';
 import { useEffect } from "react";
+import Register from "./register";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,7 +26,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider theme={theme}>
-        <Login />
+        <Register />
     </ThemeProvider>
   );
 }

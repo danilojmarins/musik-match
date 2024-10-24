@@ -63,8 +63,8 @@ public class UserService {
             userResponse = new UserResponseDTO(
                 musician.getName(),
                 musician.getBio(),
-                null,
-                musician.getBirthdate(),
+                musician.getState(),
+                musician.getCity(),
                 null,
                 musicianInstruments,
                 null,
@@ -87,8 +87,8 @@ public class UserService {
             userResponse = new UserResponseDTO(
                 band.getName(),
                 band.getBio(),
+                band.getState(),
                 band.getCity(),
-                null,
                 band.getType().toString(),
                 null,
                 bandInstruments,
