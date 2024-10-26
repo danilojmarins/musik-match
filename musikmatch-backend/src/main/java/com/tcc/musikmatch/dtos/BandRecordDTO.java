@@ -29,12 +29,12 @@ public record BandRecordDTO(
         String bio,
 
         @NotNull(message = "lat não pode ser NULL")
-        @DecimalMin(value = "0.0", message = "lat não pode ser menor que 0")
+        @DecimalMin(value = "-90.0", message = "lat não pode ser menor que -90")
         @DecimalMax(value = "90.0", message = "lat não pode ser maior que 90")
         BigDecimal lat,
 
         @NotNull(message = "lon não pode ser NULL")
-        @DecimalMin(value = "0.0", message = "lon não pode ser menor que 0")
+        @DecimalMin(value = "-180.0", message = "lon não pode ser menor que -180")
         @DecimalMax(value = "180.0", message = "lon não pode ser maior que 180")
         BigDecimal lon,
 

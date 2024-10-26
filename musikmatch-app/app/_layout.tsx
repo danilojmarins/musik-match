@@ -1,10 +1,9 @@
 import theme from "@/styles/theme";
-import { SplashScreen, Stack } from "expo-router";
+import { Slot, SplashScreen, Stack } from "expo-router";
 import { ThemeProvider } from "styled-components/native";
-import Login from "./login";
 import { useFonts } from 'expo-font';
 import { useEffect } from "react";
-import Register from "./register";
+import { SessionProvider } from "@/context/SessionContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,8 +24,10 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-        <Register />
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider theme={theme}>
+        <Slot />
+      </ThemeProvider>
+    </SessionProvider>
   );
 }

@@ -4,16 +4,51 @@ import Input from "@/components/input";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from "react";
 import { Text } from "react-native";
+import { router } from "expo-router";
+import { api } from "@/config/api";
+import { AxiosError } from "axios";
+import { useSession } from "@/context/SessionContext";
 
 export default function Login() {
 
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [hidePassword, setHidePassword] = useState<boolean>(true);
+	const [email, setEmail] = useState<string>('');
+	const [password, setPassword] = useState<string>('');
+	const [hidePassword, setHidePassword] = useState<boolean>(true);
+	const [error, setError] = useState<string>('');
+
+	const { signIn } = useSession();
 
     const toggleHidePassword = () => {
-        setHidePassword(!hidePassword);
+    	setHidePassword(!hidePassword);
     }
+
+	const validateLogin = () => {
+		const errors = [
+			{ condition: !email, message: 'Informe um e-mail.' },
+			{ condition: !password, message: 'Informe uma senha.' }
+		];
+		for (const error of errors) {
+			if (error.condition) {
+				setError(error.message);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	const handleLogin = async () => {
+		try {
+			const response = await api.post<{ token: string }>('/api/auth/login', { email, password });
+			const token = response.data.token;
+			signIn(token);
+            router.replace('/');
+		}
+		catch (error) {
+			if (error instanceof AxiosError && error.status === 403) {
+				setError('Não autorizado. E-mail ou senha incorretos.');
+			}
+		}
+	}
 
     return (
         <LoginContainer>
@@ -55,13 +90,20 @@ export default function Login() {
                         iconAction={toggleHidePassword}
                     />
 
+					{error && <Text style={{ color: '#FF0F0F', fontSize: 12 }}>{error}</Text>}
+
                     <ButtonContainer>
                         <CustomButton
                             text="Entrar"
                             backgroundColor="#00A36C"
                             color="#FFF"
                             width="108px"
-                            buttonAction={() => {}}
+                            buttonAction={() => {
+								if (!validateLogin()) {
+									return;
+								}
+								handleLogin()
+							}}
                         />
                         <Text style={{ fontWeight: 'bold' }}>ou</Text>
                         <CustomButton
@@ -69,7 +111,7 @@ export default function Login() {
                             backgroundColor="#9FE2BF"
                             color="#FFF"
                             width="108px"
-                            buttonAction={() => {}}
+                            buttonAction={() => router.navigate('/register')}
                         />
                     </ButtonContainer>
                 </InputContainer>
