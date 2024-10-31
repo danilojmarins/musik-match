@@ -34,7 +34,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
             value={{
                 signIn: (token: string) => {
                     apiAuth.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    setSession('xxx');
+                    console.log(token);
+                    setSession(token);
                 },
                 signOut: () => {
                     apiAuth.defaults.headers.common['Authorization'] = '';

@@ -94,6 +94,14 @@ export default function Login() {
 
                     <ButtonContainer>
                         <CustomButton
+                            text="Cadastrar"
+                            backgroundColor="#9FE2BF"
+                            color="#FFF"
+                            width="108px"
+                            buttonAction={() => router.navigate('/register')}
+                        />
+                        <Text style={{ fontWeight: 'bold' }}>ou</Text>
+                        <CustomButton
                             text="Entrar"
                             backgroundColor="#00A36C"
                             color="#FFF"
@@ -104,14 +112,6 @@ export default function Login() {
 								}
 								handleLogin()
 							}}
-                        />
-                        <Text style={{ fontWeight: 'bold' }}>ou</Text>
-                        <CustomButton
-                            text="Cadastrar"
-                            backgroundColor="#9FE2BF"
-                            color="#FFF"
-                            width="108px"
-                            buttonAction={() => router.navigate('/register')}
                         />
                     </ButtonContainer>
                 </InputContainer>

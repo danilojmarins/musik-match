@@ -25,9 +25,12 @@ export default function AppLayout() {
             headerShown: false,
             tabBarShowLabel: false
         }}
+        sceneContainerStyle={{
+            backgroundColor: '#DDD',
+        }}
     >
         <Tabs.Screen
-            name="home/index"
+            name="index"
             options={{
                 title: 'Buscar',
                 tabBarIcon: ({ color }) => <Ionicons name="search-outline" size={28} color={color} />,
