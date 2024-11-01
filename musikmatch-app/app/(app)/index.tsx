@@ -5,10 +5,14 @@ import { UserResponse } from "@/types/UserResponse";
 import { apiAuth } from "@/config/api";
 import { AxiosError } from "axios";
 import UserCard from "@/components/userCard";
+import InviteCard from "@/components/inviteCard";
 
 export default function Home() {
 
     const [usersData, setUsersData] = useState<UserResponse[]>([]);
+
+    const [sendInviteVisible, setSendInviteVisible] = useState<boolean>(false);
+    const [userToInvite, setUserToInvite] = useState<UserResponse | null>(null);
 
     useEffect(() => {
         const getUsersData = async () => {
@@ -53,10 +57,12 @@ export default function Home() {
             <UsersCardsContainer>
                 {usersData && usersData.map(user => {
                     return (
-                        <UserCard key={user.name} user={user} />
+                        <UserCard key={user.name} user={user} setInviteUser={setUserToInvite} setSendInviteVisible={setSendInviteVisible} />
                     );
                 })}
             </UsersCardsContainer>
+
+            <InviteCard user={userToInvite} visible={sendInviteVisible} setVisible={setSendInviteVisible} />
         </HomeContainer>
     )
 }

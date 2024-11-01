@@ -33,7 +33,6 @@ public class UserController {
         @RequestParam(name = "distance", required = false) Integer distance,
         @AuthenticationPrincipal UserDetails user
     ) {
-        System.out.println(instrument);
         return ResponseEntity.status(HttpStatus.OK).body(userService.filterUsers(search, genre, instrument, distance));
     }
 

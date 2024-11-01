@@ -5,11 +5,13 @@ import { UserResponse } from "@/types/UserResponse";
 
 interface UserCardProps {
     user: UserResponse;
+    setInviteUser: (user: UserResponse) => void;
+    setSendInviteVisible: (visible: boolean) => void;
 }
 
 export default function UserCard(props: UserCardProps) {
 
-    const { user } = props;
+    const { user, setInviteUser, setSendInviteVisible } = props;
     
     const nameSplit = user.name.split(' ');
     const name = nameSplit[0];
@@ -34,13 +36,13 @@ export default function UserCard(props: UserCardProps) {
                     <UserName>{user.name}</UserName>
                     <UserLocation>{user.city} - {user.state}</UserLocation>
                     <MusicianInstruments numberOfLines={1}>{userInstruments}</MusicianInstruments>
-                    <UserBio>{user.bio}</UserBio>
+                    <UserBio numberOfLines={5}>{user.bio} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</UserBio>
                 </UserInfo>
             </UserInfoContainer>
 
             <Separator></Separator>
 
-            <SendButton>
+            <SendButton onTouchEnd={() => { setInviteUser(user); setSendInviteVisible(true) }}>
                 <MaterialCommunityIcons
                     name="email-send-outline"
                     size={24}

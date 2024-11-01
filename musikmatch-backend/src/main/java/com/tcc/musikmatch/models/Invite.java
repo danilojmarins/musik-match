@@ -29,6 +29,9 @@ public class Invite implements Serializable {
     @Column(nullable = false)
     private String message;
 
+    @Column(nullable = false)
+    private String number;
+
     @CreatedDate
     private Instant sentAt;
 
@@ -70,5 +73,13 @@ public class Invite implements Serializable {
 
     public void setSentAt(Instant sentAt) {
         this.sentAt = sentAt;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }
