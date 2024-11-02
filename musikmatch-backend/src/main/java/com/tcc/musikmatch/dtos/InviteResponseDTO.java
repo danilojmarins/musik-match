@@ -1,9 +1,11 @@
 package com.tcc.musikmatch.dtos;
 
 import java.util.Set;
-import java.time.Instant;
+import java.util.Date;
+import java.util.UUID;
 
 public record InviteResponseDTO(
+    UUID id,
     String name,
     String city,
     String state,
@@ -11,7 +13,7 @@ public record InviteResponseDTO(
     String message,
     String number,
     String email,
-    Instant sentAt
+    Date sentAt
 ) {
     
 }

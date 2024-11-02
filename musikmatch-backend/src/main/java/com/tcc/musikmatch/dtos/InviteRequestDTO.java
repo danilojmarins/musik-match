@@ -1,7 +1,5 @@
 package com.tcc.musikmatch.dtos;
 
-import org.hibernate.validator.constraints.UUID;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,8 +7,7 @@ import jakarta.validation.constraints.Size;
 public record InviteRequestDTO(
     @NotNull(message = "")
     @NotBlank(message = "toUser é um campo obrigatório")
-    @UUID(message = "toUser deve ser um UUID válido")
-    java.util.UUID toUser,
+    String toUser,
 
     @NotNull(message = "bio não pode ser NULL")
     @NotBlank(message = "bio é um campo obrigatório")

@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useReducer } from "react";
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
+import { apiAuth } from "@/config/api";
 
 type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
 
@@ -52,6 +53,7 @@ export function useStorageState(key: string): UseStateHook<string> {
       }
     } else {
       SecureStore.getItemAsync(key).then((value) => {
+        apiAuth.defaults.headers.common["Authorization"] = `Bearer ${value}`;
         setState(value);
       });
     }

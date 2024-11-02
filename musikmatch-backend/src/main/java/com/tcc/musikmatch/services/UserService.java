@@ -90,6 +90,7 @@ public class UserService {
                 band.getGenres().forEach(genre -> genres.add(genre.getName()));
 
                 UserResponseDTO userResponse = new UserResponseDTO(
+                    band.getUser().getId(),
                     band.getName(),
                     band.getBio(),
                     band.getState(),
@@ -152,6 +153,7 @@ public class UserService {
                 musician.getGenres().forEach(genre -> genres.add(genre.getName()));
 
                 UserResponseDTO userResponse = new UserResponseDTO(
+                    musician.getUser().getId(),
                     musician.getName(),
                     musician.getBio(),
                     musician.getState(),
@@ -202,6 +204,7 @@ public class UserService {
             musician.getGenres().forEach(genre -> genres.add(genre.getName()));
 
             userResponse = new UserResponseDTO(
+                musician.getUser().getId(),
                 musician.getName(),
                 musician.getBio(),
                 musician.getState(),
@@ -226,6 +229,7 @@ public class UserService {
             band.getGenres().forEach(genre -> genres.add(genre.getName()));
 
             userResponse = new UserResponseDTO(
+                band.getUser().getId(),
                 band.getName(),
                 band.getBio(),
                 band.getState(),
@@ -235,6 +239,78 @@ public class UserService {
                 bandInstruments,
                 genres,
                 user.getRole().toString()
+            );
+        }
+        else {
+            throw new EntityNotFoundException("Usuário indefinido.");
+        }
+
+        return userResponse;
+    }
+
+    public UserResponseDTO getLoggedUser() {
+        User loggedUser = (User) SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getPrincipal()
+        ;
+
+        UserResponseDTO userResponse;
+
+        if (loggedUser.getRole() == Role.MUSICIAN) {
+            Musician musician = musicianRepository
+                .findByUser(loggedUser)
+                .orElseThrow(() -> new EntityNotFoundException("Músico não encontrado."))
+            ;
+
+            Set<MusicianInstrumentResponseDTO> musicianInstruments = new HashSet<>();
+            musician.getInstruments().forEach(instrument -> {
+                MusicianInstrumentResponseDTO musicianInstrument = new MusicianInstrumentResponseDTO(
+                        instrument.getInstrument().getName(),
+                        instrument.getProficiency()
+                );
+                musicianInstruments.add(musicianInstrument);
+            });
+
+            Set<String> genres = new HashSet<>();
+            musician.getGenres().forEach(genre -> genres.add(genre.getName()));
+
+            userResponse = new UserResponseDTO(
+                musician.getUser().getId(),
+                musician.getName(),
+                musician.getBio(),
+                musician.getState(),
+                musician.getCity(),
+                null,
+                musicianInstruments,
+                null,
+                genres,
+                loggedUser.getRole().toString()
+            );
+        }
+        else if (loggedUser.getRole() == Role.BAND) {
+            Band band = bandRepository
+                .findByUser(loggedUser)
+                .orElseThrow(() -> new EntityNotFoundException("Banda não encontrada."))
+            ;
+
+            Set<String> bandInstruments = new HashSet<>();
+            band.getInstruments().forEach(instrument -> bandInstruments.add(instrument.getName()));
+
+            Set<String> genres = new HashSet<>();
+            band.getGenres().forEach(genre -> genres.add(genre.getName()));
+
+            userResponse = new UserResponseDTO(
+                band.getUser().getId(),
+                band.getName(),
+                band.getBio(),
+                band.getState(),
+                band.getCity(),
+                band.getType().toString(),
+                null,
+                bandInstruments,
+                genres,
+                loggedUser.getRole().toString()
             );
         }
         else {

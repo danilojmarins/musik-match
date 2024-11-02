@@ -28,11 +28,11 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(request -> {
             request.requestMatchers(
-                    "/api/auth/**",
-                    "/api/musicians/register",
-                    "/api/bands/register",
-                    "/api/instruments",
-                    "/api/genres"
+                "/api/auth/**",
+                "/api/musicians/register",
+                "/api/bands/register",
+                "/api/instruments",
+                "/api/genres"
             ).permitAll();
             request.anyRequest().authenticated();
         });

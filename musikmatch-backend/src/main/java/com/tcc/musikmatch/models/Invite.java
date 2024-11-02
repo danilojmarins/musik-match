@@ -2,14 +2,16 @@ package com.tcc.musikmatch.models;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Table(name = "invites")
+@EntityListeners(AuditingEntityListener.class)
 public class Invite implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -33,7 +35,7 @@ public class Invite implements Serializable {
     private String number;
 
     @CreatedDate
-    private Instant sentAt;
+    private Date createdAt;
 
     public UUID getId() {
         return id;
@@ -67,12 +69,12 @@ public class Invite implements Serializable {
         this.message = message;
     }
 
-    public Instant getSentAt() {
-        return sentAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setSentAt(Instant sentAt) {
-        this.sentAt = sentAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getNumber() {

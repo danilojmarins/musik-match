@@ -36,7 +36,7 @@ public class InviteService {
         ;
 
         User invitedUser = userRepository
-            .findById(inviteRequestDTO.toUser())
+            .findById(UUID.fromString(inviteRequestDTO.toUser()))
             .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."))
         ;
 
@@ -69,14 +69,15 @@ public class InviteService {
                 band.getInstruments().forEach(instrument -> instruments.add(instrument.getName()));
 
                 InviteResponseDTO inviteResponse = new InviteResponseDTO(
-                        band.getName(),
-                        band.getCity(),
-                        band.getState(),
-                        instruments,
-                        invite.getMessage(),
-                        invite.getNumber(),
-                        invite.getFromUser().getEmail(),
-                        invite.getSentAt()
+                    invite.getFromUser().getId(),
+                    band.getName(),
+                    band.getCity(),
+                    band.getState(),
+                    instruments,
+                    invite.getMessage(),
+                    invite.getNumber(),
+                    invite.getFromUser().getEmail(),
+                    invite.getCreatedAt()
                 );
 
                 invitesResponse.add(inviteResponse);
@@ -88,14 +89,15 @@ public class InviteService {
                 musician.getInstruments().forEach(instrument -> instruments.add(instrument.getInstrument().getName()));
 
                 InviteResponseDTO inviteResponse = new InviteResponseDTO(
-                        musician.getName(),
-                        musician.getCity(),
-                        musician.getState(),
-                        instruments,
-                        invite.getMessage(),
-                        invite.getNumber(),
-                        invite.getFromUser().getEmail(),
-                        invite.getSentAt()
+                    invite.getFromUser().getId(),
+                    musician.getName(),
+                    musician.getCity(),
+                    musician.getState(),
+                    instruments,
+                    invite.getMessage(),
+                    invite.getNumber(),
+                    invite.getFromUser().getEmail(),
+                    invite.getCreatedAt()
                 );
 
                 invitesResponse.add(inviteResponse);
@@ -107,16 +109,16 @@ public class InviteService {
 
     public List<InviteResponseDTO> getSentInvites() {
         User loggedUser = (User) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal()
+            .getContext()
+            .getAuthentication()
+            .getPrincipal()
         ;
 
-        List<Invite> receivedInvites = inviteRepository.findByFromUser(loggedUser);
+        List<Invite> sentInvites = inviteRepository.findByFromUser(loggedUser);
 
         List<InviteResponseDTO> invitesResponse = new ArrayList<>();
 
-        receivedInvites.forEach(invite -> {
+        sentInvites.forEach(invite -> {
             if (loggedUser.getRole() == Role.MUSICIAN) {
                 Band band = invite.getToUser().getBand();
 
@@ -124,14 +126,15 @@ public class InviteService {
                 band.getInstruments().forEach(instrument -> instruments.add(instrument.getName()));
 
                 InviteResponseDTO inviteResponse = new InviteResponseDTO(
-                        band.getName(),
-                        band.getCity(),
-                        band.getState(),
-                        instruments,
-                        invite.getMessage(),
-                        invite.getNumber(),
-                        invite.getFromUser().getEmail(),
-                        invite.getSentAt()
+                    invite.getToUser().getId(),
+                    band.getName(),
+                    band.getCity(),
+                    band.getState(),
+                    instruments,
+                    invite.getMessage(),
+                    invite.getNumber(),
+                    invite.getFromUser().getEmail(),
+                    invite.getCreatedAt()
                 );
 
                 invitesResponse.add(inviteResponse);
@@ -143,14 +146,15 @@ public class InviteService {
                 musician.getInstruments().forEach(instrument -> instruments.add(instrument.getInstrument().getName()));
 
                 InviteResponseDTO inviteResponse = new InviteResponseDTO(
-                        musician.getName(),
-                        musician.getCity(),
-                        musician.getState(),
-                        instruments,
-                        invite.getMessage(),
-                        invite.getNumber(),
-                        invite.getFromUser().getEmail(),
-                        invite.getSentAt()
+                    invite.getToUser().getId(),
+                    musician.getName(),
+                    musician.getCity(),
+                    musician.getState(),
+                    instruments,
+                    invite.getMessage(),
+                    invite.getNumber(),
+                    invite.getFromUser().getEmail(),
+                    invite.getCreatedAt()
                 );
 
                 invitesResponse.add(inviteResponse);

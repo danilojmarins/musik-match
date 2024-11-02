@@ -41,4 +41,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
     }
 
+    @GetMapping("/loggedUser")
+    public ResponseEntity<UserResponseDTO> getLoggedUser() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getLoggedUser());
+    }
+
 }
