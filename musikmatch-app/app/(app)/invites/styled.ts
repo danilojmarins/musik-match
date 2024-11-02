@@ -1,13 +1,13 @@
 import styled from "styled-components/native";
 
-export const InvitesContainer = styled.View``;
+export const InvitesContainer = styled.ScrollView``;
 
 export const SelectInviteTab = styled.View`
   background-color: #fff;
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 export const InviteTab = styled.View<{ $selected: boolean }>`

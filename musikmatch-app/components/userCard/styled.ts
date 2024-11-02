@@ -4,6 +4,8 @@ export const CardContainer = styled.View`
   padding: 12px 18px 8px 18px;
   background-color: #fff;
   width: 100%;
+  margin: 4px 0;
+  border-radius: 10px;
 `;
 
 export const UserInfoContainer = styled.View`

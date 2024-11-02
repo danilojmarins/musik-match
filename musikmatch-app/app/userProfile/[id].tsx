@@ -1,21 +1,23 @@
-import { useSession } from "@/context/SessionContext";
-import { SectionText, SectionTitle, SectionTopic, UserAbout, UserBackgroundImage, UserHeaderContainer, UserLocation, UserName, UserPageContainer, UserProfileImage } from "./styled";
-import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
+import { SectionText, SectionTitle, SectionTopic, SendInviteContainer, SendInviteText, UserAbout, UserBackgroundImage, UserHeaderContainer, UserLocation, UserName, UserPageContainer, UserProfileImage } from "./styled";
 import { useEffect, useState } from "react";
 import { UserResponse } from "@/types/UserResponse";
 import { apiAuth } from "@/config/api";
 import { AxiosError } from "axios";
 import { Text, View } from "react-native";
+import { router, useGlobalSearchParams } from "expo-router";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import InviteCard from "@/components/inviteCard";
 
-export default function User() {
+export default function UserProfile() {
 
-    const { signOut } = useSession();
+    const { id } = useGlobalSearchParams();
 
     const [user, setUser] = useState<UserResponse | null>(null);
+    const [sentInviteVisible, setSentInviteVisible] = useState<boolean>(false);
 
     const getUser = async () => {
         try {
-            const userData = await apiAuth.get<UserResponse>("/api/users/loggedUser");
+            const userData = await apiAuth.get<UserResponse>(`/api/users/${id}`);
             setUser(userData.data);
         }
         catch (error) {
@@ -27,7 +29,7 @@ export default function User() {
 
     useEffect(() => {
         getUser();
-    }, []);
+    }, [id]);
 
     const nameSplit = user && user.name ? user.name.split(' ') : ['', ''];
     const name = nameSplit[0];
@@ -42,13 +44,6 @@ export default function User() {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text>Usuário não encontrado.</Text>
-                <MaterialIcons
-                    onPress={signOut}
-                    name="logout"
-                    size={24}
-                    color="#555"
-                    style={{ marginTop: 16 }}
-                />
             </View>
         )
     }
@@ -56,7 +51,15 @@ export default function User() {
     return (
         <UserPageContainer>
             <UserHeaderContainer>
-                <UserBackgroundImage></UserBackgroundImage>
+                <UserBackgroundImage>
+                    <Ionicons
+                        name="arrow-back-outline"
+                        size={32}
+                        color="#333"
+                        style={{ position: 'relative', top: 36, left: 8 }}
+                        onPress={() => router.back()}
+                    />
+                </UserBackgroundImage>
                 <UserProfileImage
                     source={{ uri: `https://ui-avatars.com/api/?name=${name}${surname}&background=random&size=512` }}
                 />
@@ -64,13 +67,16 @@ export default function User() {
                 <UserName>{user && user.name}</UserName>
                 <UserLocation>{user && user.city} - {user && user.state}</UserLocation>
 
-                <MaterialIcons
-                    onPress={signOut}
-                    name="logout"
-                    size={24}
-                    color="#555"
-                    style={{ position: 'absolute', top: 165, right: 20 }}
-                />
+                <SendInviteContainer
+                    onTouchEnd={() => setSentInviteVisible(true)}
+                >
+                    <MaterialCommunityIcons
+                        name="email-send-outline"
+                        size={24}
+                        color="#999"
+                    />
+                    <SendInviteText>Enviar Convite</SendInviteText>
+                </SendInviteContainer>
             </UserHeaderContainer>
 
             <UserAbout>
@@ -91,6 +97,12 @@ export default function User() {
                     return <SectionTopic key={genre}>• {genre}</SectionTopic>;
                 })}
             </UserAbout>
+
+            <InviteCard
+                user={user}
+                visible={sentInviteVisible}
+                setVisible={setSentInviteVisible}
+            />
         </UserPageContainer>
     );
 }

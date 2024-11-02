@@ -11,7 +11,7 @@ export const FilterContainer = styled.View`
   align-items: center;
   justify-content: center;
   row-gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 export const FilterRowContainer = styled.View`

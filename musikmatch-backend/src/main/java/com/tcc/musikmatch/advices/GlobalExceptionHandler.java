@@ -3,6 +3,8 @@ package com.tcc.musikmatch.advices;
 import com.tcc.musikmatch.exceptions.EntityAlreadyExistsException;
 import com.tcc.musikmatch.exceptions.EntityNotFoundException;
 import com.tcc.musikmatch.exceptions.UnauthorizedException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +24,21 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String handle(ConstraintViolationException constraintViolationException) {
+        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
+        String errorMessage = "";
+        if (!violations.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            violations.forEach(violation -> builder.append(" " + violation.getMessage()));
+            errorMessage = builder.toString();
+        } else {
+            errorMessage = "ConstraintViolationException occured.";
+        }
+        return errorMessage;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

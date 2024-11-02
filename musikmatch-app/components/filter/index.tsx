@@ -81,7 +81,6 @@ export default function Filter(props: FilterProps) {
         setInstrument(null);
         setGenre(null);
         setMaxDistance(null);
-        setExpand(false);
     }
 
     return (

@@ -68,11 +68,11 @@ export default function Invites() {
             </SelectInviteTab>
 
             {currentTab === 'RECEIVED' && receivedInvites.map(invite => {
-                return <InviteUserCard key={invite.id} invite={invite} />;
+                return <InviteUserCard key={invite.message} invite={invite} />;
             })}
 
             {currentTab === 'SENT' && sentInvites.map(invite => {
-                return <InviteUserCard key={invite.id} invite={invite} />;
+                return <InviteUserCard key={invite.message} invite={invite} />;
             })}
         </InvitesContainer>
     )

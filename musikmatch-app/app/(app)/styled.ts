@@ -1,12 +1,9 @@
 import styled from "styled-components/native";
 
-export const HomeContainer = styled.View``;
+export const HomeContainer = styled.ScrollView``;
 
-export const UsersCardsContainer = styled.ScrollView.attrs(() => ({
-  contentContainerStyle: {
-    flexDirection: "column",
-    flexWrap: "nowrap",
-    alignItems: "center",
-    rowGap: 8,
-  },
-}))``;
+export const UsersCardsContainer = styled.View`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: "center";
+`;

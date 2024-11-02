@@ -23,7 +23,7 @@ public record MusicianRecordDTO(
 
         @NotNull(message = "bio não pode ser NULL")
         @NotBlank(message = "bio é um campo obrigatório")
-        @Size(min = 3, max = 240, message = "bio deve ter entre 3 e 240 caracteres")
+        @Size(min = 3, max = 512, message = "bio deve ter entre 3 e 240 caracteres")
         String bio,
 
         @NotNull(message = "lat não pode ser NULL")

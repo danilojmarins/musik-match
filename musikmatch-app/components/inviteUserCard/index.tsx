@@ -1,6 +1,7 @@
 import { Image } from "react-native";
 import { CardContainer, MusicianInstruments, SentDate, UserBio, UserContact, UserImage, UserInfo, UserInfoContainer, UserLocation, UserName } from "./styled";
 import { InviteResponse } from "@/types/InviteResponse";
+import { router } from "expo-router";
 
 interface InviteUserCardProps {
     invite: InviteResponse;
@@ -25,14 +26,26 @@ export default function InviteUserCard(props: InviteUserCardProps) {
         <CardContainer>
             <SentDate>{sentAt.toLocaleDateString()}</SentDate>
             <UserInfoContainer>
-                <UserImage>
+                <UserImage
+                    onTouchStart={() => router.push({
+                        pathname: '/userProfile/[id]',
+                        params: { id: invite.id } 
+                    })}
+                >
                     <Image
                         style={{ width: 32, height: 32, borderRadius: 100 }}
                         source={{ uri: `https://ui-avatars.com/api/?name=${name}${surname}&background=random` }}
                     />
                 </UserImage>
                 <UserInfo>
-                    <UserName>{invite.name}</UserName>
+                    <UserName
+                        onPress={() => router.push({
+                            pathname: '/userProfile/[id]',
+                            params: { id: invite.id } 
+                        })}
+                    >
+                        {invite.name}
+                    </UserName>
                     <UserLocation>{invite.city} - {invite.state}</UserLocation>
                     <MusicianInstruments numberOfLines={1}>{userInstruments}</MusicianInstruments>
                     <UserBio numberOfLines={5}>{invite.message}</UserBio>
@@ -40,8 +53,6 @@ export default function InviteUserCard(props: InviteUserCardProps) {
                     <UserContact numberOfLines={1}>Contato: {invite.number}</UserContact>
                 </UserInfo>
             </UserInfoContainer>
-
-            
         </CardContainer>
     )
 }

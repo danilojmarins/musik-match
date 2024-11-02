@@ -31,6 +31,8 @@ public class SecurityConfig {
                 "/api/auth/**",
                 "/api/musicians/register",
                 "/api/bands/register",
+                "/api/musicians/batch",
+                "/api/bands/batch",
                 "/api/instruments",
                 "/api/genres"
             ).permitAll();
