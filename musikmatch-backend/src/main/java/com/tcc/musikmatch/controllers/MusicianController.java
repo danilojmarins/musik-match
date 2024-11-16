@@ -1,6 +1,7 @@
 package com.tcc.musikmatch.controllers;
 
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
+import com.tcc.musikmatch.dtos.MusicianEditDTO;
 import com.tcc.musikmatch.dtos.MusicianRecordDTO;
 import com.tcc.musikmatch.services.MusicianService;
 import jakarta.validation.Valid;
@@ -37,6 +38,12 @@ public class MusicianController {
             authResponses.add(response);
         });
         return  ResponseEntity.status((HttpStatus.CREATED)).body(authResponses);
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<String> editMusician(@RequestBody @Valid MusicianEditDTO musicianEditDTO) {
+        musicianService.editMusician(musicianEditDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Músico atualizado com sucesso.");
     }
 
 }

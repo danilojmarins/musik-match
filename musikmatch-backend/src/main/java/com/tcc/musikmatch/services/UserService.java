@@ -77,7 +77,10 @@ public class UserService {
 
             List<Band> bandsFilteredByDistance = new ArrayList<>();
             bandsFilteredBySearch.forEach(band -> {
-                if (distance == null || Distance.calcHaversine(userLat, userLon, band.getLat().doubleValue(), band.getLon().doubleValue()) <= distance) {
+                if (distance == null || (distance < 200 && Distance.calcHaversine(userLat, userLon, band.getLat().doubleValue(), band.getLon().doubleValue()) <= distance)) {
+                    bandsFilteredByDistance.add(band);
+                }
+                else if (distance == 200 && Distance.calcHaversine(userLat, userLon, band.getLat().doubleValue(), band.getLon().doubleValue()) > 100) {
                     bandsFilteredByDistance.add(band);
                 }
             });
@@ -134,7 +137,10 @@ public class UserService {
 
             List<Musician> musiciansFilteredByDistance = new ArrayList<>();
             musiciansFilteredBySearch.forEach(musician -> {
-                if (distance == null || Distance.calcHaversine(userLat, userLon, musician.getLat().doubleValue(), musician.getLon().doubleValue()) <= distance) {
+                if (distance == null || (distance < 200 && Distance.calcHaversine(userLat, userLon, musician.getLat().doubleValue(), musician.getLon().doubleValue()) <= distance)) {
+                    musiciansFilteredByDistance.add(musician);
+                }
+                else if (distance == 200 && Distance.calcHaversine(userLat, userLon, musician.getLat().doubleValue(), musician.getLon().doubleValue()) > 100) {
                     musiciansFilteredByDistance.add(musician);
                 }
             });

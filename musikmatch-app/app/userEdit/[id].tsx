@@ -1,6 +1,5 @@
 import Input from "@/components/input";
 import { AppTitleContainer, ButtonContainer, CopyrightText, InputContainer, RegisterContainer, RegisterFormContainer } from "./styled";
-import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "@/components/button";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text } from "react-native";
@@ -8,24 +7,21 @@ import { SelectList, MultipleSelectList } from "react-native-dropdown-select-lis
 import { estadosSelectData, userTypeSelectData, bandTypeSelectData } from "./utils";
 import axios, { AxiosError } from "axios";
 import { AppTitle1, AppTitle2 } from "../styled";
-import { api } from "@/config/api";
+import { api, apiAuth } from "@/config/api";
 import { Instrument } from "@/types/Instrument";
 import { Geocoding } from "@/types/Geocoding";
-import { router } from "expo-router";
-import { useSession } from "@/context/SessionContext";
+import { router, useGlobalSearchParams } from "expo-router";
+import { UserResponse } from "@/types/UserResponse";
 
-export default function Register() {
+export default function userEdit() {
 
-    const [registerPhase, setRegisterPhase] = useState<number>(0);
+    const [editPhase, setEditPhase] = useState<number>(1);
     const [error, setError] = useState<string>();
 
-    const [hidePassword, setHidePassword] = useState<boolean>(true);
     const [userType, setUserType] = useState<'BAND' | 'MUSICIAN'>();
-    const [bandType, setBandType] = useState<'COVER' | 'AUTHORAL' | 'MIXED'>();
+    const [bandType, setBandType] = useState<'COVER' | 'AUTHORAL' | 'MIXED' | null>();
     const [name, setName] = useState<string>('');
     const [bio, setBio] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
     const [state, setState] = useState<string>();
 
     const [cidadesData, setCidadesData] = useState<{ key: string, value: string }[]>();
@@ -37,11 +33,29 @@ export default function Register() {
     const [instrumentsData, setInsturmentsData] = useState<{ key: number, value: string }[]>();
     const [instruments, setInstruments] = useState<number[]>([]);
 
-    const { signIn } = useSession();
+    const [user, setUser] = useState<UserResponse | null>(null);
 
-    const toggleHidePassword = () => {
-        setHidePassword(!hidePassword);
+    const { id } = useGlobalSearchParams();
+
+    const getUser = async () => {
+        try {
+            const userData = await apiAuth.get<UserResponse>(`/api/users/${id}`);
+            setUserType(userData.data.role);
+            setBandType(userData.data.type);
+            setName(userData.data.name);
+            setBio(userData.data.bio);
+            setUser(userData.data);
+        }
+        catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error.message);
+            }
+        }
     }
+
+    useEffect(() => {
+        getUser();
+    }, [id]);
 
     const getCidadesByEstado = async () => {
         try {
@@ -100,21 +114,6 @@ export default function Register() {
         }
     }
 
-    const handlePhase0FormSubmit = () => {
-        const errors = [
-            { condition: !userType, message: 'Informe um tipo de usuário.' },
-            { condition: userType === 'BAND' && !bandType, message: 'Informe um tipo de banda.' }
-        ]
-        for (const error of errors) {
-            if (error.condition) {
-                setError(error.message);
-                return;
-            }
-        }
-        setError('');
-        setRegisterPhase(1);
-    }
-
     const handlePhase1FormSubmit = () => {
         const errors = [
             { condition: name.length < 3, message: 'Nome deve ter pelo menos 3 caracteres.' },
@@ -127,7 +126,7 @@ export default function Register() {
             }
         }
         setError('');
-        setRegisterPhase(2);
+        setEditPhase(2);
     }
 
     const handlePhase2FormSubmit = () => {
@@ -142,7 +141,7 @@ export default function Register() {
             }
         }
         setError('');
-        setRegisterPhase(3);
+        setEditPhase(3);
     }
 
     const handlePhase3FormSubmit = () => {
@@ -156,7 +155,7 @@ export default function Register() {
             }
         }
         setError('');
-        setRegisterPhase(4);
+        setEditPhase(4);
     }
 
     const handlePhase4FormSubmit = () => {
@@ -169,44 +168,27 @@ export default function Register() {
                 return;
             }
         }
-        setError('');
-        setRegisterPhase(5);
+
+        handleEdit();
     }
 
-    const handlePhase5FormSubmit = () => {
-        const errors = [
-            { condition: !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g), message: 'E-mail deve ser válido.' },
-            { condition: password.length < 6, message: 'Senha deve ter pelo menos 6 caracteres.' }
-        ]
-        for (const error of errors) {
-            if (error.condition) {
-                setError(error.message);
-                return;
-            }
-        }
 
-        handleRegistration();
-    }
 
     const handlePreviousRegisterPhase = () => {
-        switch (registerPhase) {
-            case 0: setError(''); router.navigate('/'); break;
-            case 1: setError(''); setRegisterPhase(0); break;
-            case 2: setError(''); setRegisterPhase(1); break;
-            case 3: setError(''); setRegisterPhase(2); break;
-            case 4: setError(''); setRegisterPhase(3); break;
-            case 5: setError(''); setRegisterPhase(4); break;
+        switch (editPhase) {
+            case 1: setError(''); router.navigate('/'); break;
+            case 2: setError(''); setEditPhase(1); break;
+            case 3: setError(''); setEditPhase(2); break;
+            case 4: setError(''); setEditPhase(3); break;
         };
     }
 
     const handleNextRegisterPhase = () => {
-        switch (registerPhase) {
-            case 0: handlePhase0FormSubmit(); break;
+        switch (editPhase) {
             case 1: handlePhase1FormSubmit(); break;
             case 2: handlePhase2FormSubmit(); break;
             case 3: handlePhase3FormSubmit(); break;
             case 4: handlePhase4FormSubmit(); break;
-            case 5: handlePhase5FormSubmit(); break;
         };
     }
 
@@ -228,8 +210,6 @@ export default function Register() {
             };
         });
         return {
-            email,
-            password,
             name,
             bio,
             state,
@@ -243,8 +223,6 @@ export default function Register() {
 
     const getBandPayload = (lat: number, lon: number) => {
         return {
-            email,
-            password,
             name,
             bio,
             state,
@@ -257,7 +235,7 @@ export default function Register() {
         };
     }
 
-    const handleRegistration = async () => {
+    const handleEdit = async () => {
         try {
             const geolocation = await axios.get<Geocoding[]>(
                 `http://api.openweathermap.org/geo/1.0/direct?q=${city},${state},BR&limit=1&appid=${process.env.EXPO_PUBLIC_WEATHER_API_KEY}`
@@ -266,9 +244,8 @@ export default function Register() {
             const lon = geolocation.data[0].lon;
 
             const payload = userType === 'BAND' ? getBandPayload(lat, lon) : getMusicianPayload(lat, lon);
-            const url = userType === 'BAND' ? '/api/bands/register' : '/api/musicians/register';
-            const register = await api.post<{ token: string }>(url, payload);
-            signIn(register.data.token);
+            const url = userType === 'BAND' ? '/api/bands/edit' : '/api/musicians/edit';
+            await apiAuth.put<{ token: string }>(url, payload);
             router.replace('/');
         }
         catch (error) {
@@ -292,33 +269,7 @@ export default function Register() {
 
             <RegisterFormContainer>
                 <InputContainer>
-                    {registerPhase === 0 && <SelectList
-                        setSelected={(value: 'BAND' | 'MUSICIAN') => setUserType(value)}
-                        placeholder={!!userType ? userTypeSelectData.find(user => user.key === userType)?.value : "Músico ou Banda?"}
-                        search={false}
-                        data={userTypeSelectData}
-                        maxHeight={72}
-                        save="key"
-                        boxStyles={styles.boxStyle}
-                        inputStyles={!!userType ? styles.inputStyleSelected : styles.inputStylePlaceholder}
-                        dropdownStyles={styles.dropdownStyle}
-                        dropdownItemStyles={styles.dropdownItemStyle}
-                    />}
-
-                    {registerPhase === 0 && userType === 'BAND' && <SelectList
-                        setSelected={(value: 'COVER' | 'AUTHORAL' | 'MIXED') => setBandType(value)}
-                        placeholder={!!bandType ? bandTypeSelectData.find(band => band.key === bandType)?.value : "Tipo de Banda"}
-                        search={false}
-                        data={bandTypeSelectData}
-                        maxHeight={72}
-                        save="key"
-                        boxStyles={styles.boxStyle}
-                        inputStyles={!!bandType ? styles.inputStyleSelected : styles.inputStylePlaceholder}
-                        dropdownStyles={styles.dropdownStyle}
-                        dropdownItemStyles={styles.dropdownItemStyle}
-                    />}
-
-                    {registerPhase === 1 && <Input
+                    {editPhase === 1 && <Input
                         placeholder={userType === 'BAND' ? 'Nome da Banda' : 'Nome'}
                         secure={false}
                         iconPosition="none"
@@ -326,7 +277,7 @@ export default function Register() {
                         onChangeText={setName}
                     />}
 
-                    {registerPhase === 1 && <Input
+                    {editPhase === 1 && <Input
                         placeholder={'Bio'}
                         secure={false}
                         multiline={true}
@@ -335,7 +286,7 @@ export default function Register() {
                         onChangeText={setBio}
                     />}
 
-                    {registerPhase === 2 && <SelectList
+                    {editPhase === 2 && <SelectList
                         setSelected={(value: string) => setState(value)}
                         placeholder={!!state ? estadosSelectData.find(estadoData => estadoData.key === state)?.value : "Estado"}
                         search={false}
@@ -348,7 +299,7 @@ export default function Register() {
                         dropdownItemStyles={styles.dropdownItemStyle}
                     />}
 
-                    {registerPhase === 2 && <SelectList
+                    {editPhase === 2 && <SelectList
                         setSelected={(value: string) => setCity(value)}
                         placeholder={!!city ? city : "Cidade"}
                         searchPlaceholder="Pesquisar"
@@ -368,7 +319,7 @@ export default function Register() {
                         data={genresData || []}
                         maxHeight={264}
                         save="key"
-                        boxStyles={registerPhase !== 3 ?  { display: "none" } : styles.boxStyle}
+                        boxStyles={editPhase !== 3 ?  { display: "none" } : styles.boxStyle}
                         inputStyles={styles.inputStylePlaceholder}
                         dropdownStyles={styles.dropdownStyle}
                         dropdownItemStyles={styles.dropdownItemStyle}
@@ -383,7 +334,7 @@ export default function Register() {
                         data={instrumentsData || []}
                         maxHeight={264}
                         save="key"
-                        boxStyles={registerPhase !== 4 ?  { display: "none" } : styles.boxStyle}
+                        boxStyles={editPhase !== 4 ?  { display: "none" } : styles.boxStyle}
                         inputStyles={styles.inputStylePlaceholder}
                         dropdownStyles={styles.dropdownStyle}
                         dropdownItemStyles={styles.dropdownItemStyle}
@@ -391,37 +342,6 @@ export default function Register() {
                         searchPlaceholder="Pesquisar"
                         labelStyles={styles.labelStyle}
                     />
-
-                    {registerPhase === 5 && <Input
-                        placeholder="E-mail"
-                        secure={false}
-                        iconPosition="none"
-                        value={email}
-                        onChangeText={setEmail}
-                    />}
-
-                    {registerPhase === 5 && <Input
-                        placeholder="Senha"
-                        secure={hidePassword}
-                        iconPosition="right"
-                        value={password}
-                        onChangeText={setPassword}
-                        Icon={
-                            hidePassword ?
-                            <Ionicons
-                                name="eye-off-outline"
-                                size={20}
-                                color="#999"
-                            />
-                            :
-                            <Ionicons
-                                name="eye-outline"
-                                size={20}
-                                color="#999"
-                            />
-                        }
-                        iconAction={toggleHidePassword}
-                    />}
 
                     {error && <Text style={{ color: '#FF0F0F', fontSize: 12 }}>{error}</Text>}
 
@@ -438,7 +358,7 @@ export default function Register() {
 
                         <CustomButton
                             buttonAction={handleNextRegisterPhase}
-                            text={registerPhase === 5 ? "Cadastrar" : "Próximo"}
+                            text={editPhase === 4 ? "Editar" : "Próximo"}
                             backgroundColor="#00A36C"
                             color="#FFF"
                             width="108px"

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { UserResponse } from "@/types/UserResponse";
 import { apiAuth } from "@/config/api";
 import { AxiosError } from "axios";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { router, useGlobalSearchParams } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import InviteCard from "@/components/inviteCard";
@@ -15,8 +15,11 @@ export default function UserProfile() {
     const [user, setUser] = useState<UserResponse | null>(null);
     const [sentInviteVisible, setSentInviteVisible] = useState<boolean>(false);
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const getUser = async () => {
         try {
+            setLoading(true);
             const userData = await apiAuth.get<UserResponse>(`/api/users/${id}`);
             setUser(userData.data);
         }
@@ -24,6 +27,9 @@ export default function UserProfile() {
             if (error instanceof AxiosError) {
                 console.error(error.message);
             }
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -39,6 +45,19 @@ export default function UserProfile() {
         user && user.role === 'MUSICIAN' ? user.musicianInstruments?.map(instrument => instrument.name) :
         user && user.role === 'BAND' ? user.bandInstruments?.map(instrument => instrument) : []
     ;
+
+    if (loading) {
+        return (
+            <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <ActivityIndicator style={{ margin: 'auto' }} size={'large'} color={'#0000FF66'} />
+            </View>
+        )
+    }
 
     if (!user) {
         return (

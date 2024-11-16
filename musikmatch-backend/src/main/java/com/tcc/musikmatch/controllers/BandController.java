@@ -1,15 +1,13 @@
 package com.tcc.musikmatch.controllers;
 
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
+import com.tcc.musikmatch.dtos.BandEditDTO;
 import com.tcc.musikmatch.dtos.BandRecordDTO;
 import com.tcc.musikmatch.services.BandService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +35,12 @@ public class BandController {
             authResponses.add(response);
         });
         return  ResponseEntity.status((HttpStatus.CREATED)).body(authResponses);
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<String> editBand(@RequestBody @Valid BandEditDTO bandEditDTO) {
+        bandService.editBand(bandEditDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Banda atualizada com sucesso.");
     }
 
 }

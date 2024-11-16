@@ -1,6 +1,7 @@
 package com.tcc.musikmatch.services;
 
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
+import com.tcc.musikmatch.dtos.MusicianEditDTO;
 import com.tcc.musikmatch.dtos.MusicianRecordDTO;
 import com.tcc.musikmatch.enums.Role;
 import com.tcc.musikmatch.exceptions.EntityAlreadyExistsException;
@@ -11,8 +12,10 @@ import com.tcc.musikmatch.models.MusicianInstrument;
 import com.tcc.musikmatch.models.User;
 import com.tcc.musikmatch.repositories.GenreRepository;
 import com.tcc.musikmatch.repositories.InstrumentRepository;
+import com.tcc.musikmatch.repositories.MusicianInstrumentRepository;
 import com.tcc.musikmatch.repositories.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ public class MusicianService {
 
     private final UserRepository userRepository;
     private final InstrumentRepository instrumentRepository;
+    private final MusicianInstrumentRepository musicianInstrumentRepository;
     private final GenreRepository genreRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -31,12 +35,14 @@ public class MusicianService {
     public MusicianService(
         UserRepository userRepository,
         InstrumentRepository instrumentRepository,
+        MusicianInstrumentRepository musicianInstrumentRepository,
         GenreRepository genreRepository,
         PasswordEncoder passwordEncoder,
         JwtService jwtService
     ) {
         this.userRepository = userRepository;
         this.instrumentRepository = instrumentRepository;
+        this.musicianInstrumentRepository = musicianInstrumentRepository;
         this.genreRepository = genreRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -93,6 +99,55 @@ public class MusicianService {
 
         String jwtToken = jwtService.generateJwtToken(user);
         return new AuthenticationResponseDTO(jwtToken);
+    }
+
+    @Transactional
+    public void editMusician(MusicianEditDTO musicianEditDTO) {
+        User loggedUser = (User) SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getPrincipal()
+        ;
+
+        Musician musician = loggedUser.getMusician();
+
+        musician.setName(musicianEditDTO.name());
+        musician.setBio(musicianEditDTO.bio());
+        musician.setState(musicianEditDTO.state());
+        musician.setCity(musicianEditDTO.city());
+        musician.setLat(musicianEditDTO.lat());
+        musician.setLon(musicianEditDTO.lon());
+
+        Set<MusicianInstrument> musicianInstruments = new HashSet<>();
+        musicianEditDTO.instruments().forEach(instrument -> {
+            MusicianInstrument musicianInstrument = new MusicianInstrument();
+            musicianInstrument.setMusician(musician);
+            musicianInstrument.setInstrument(instrumentRepository
+                    .findById(instrument.id())
+                    .orElseThrow(() -> new EntityNotFoundException("Instrumento não encontrado."))
+            );
+            musicianInstrument.setProficiency(instrument.proficiency());
+            musicianInstruments.add(musicianInstrument);
+        });
+
+        Set<Genre> genres = new HashSet<>();
+        musicianEditDTO.genresIds().forEach(id -> {
+            Genre genre = genreRepository
+                    .findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Gênero não encontrado."))
+                    ;
+            genres.add(genre);
+        });
+
+        musician.getInstruments().forEach(musicianInstrument -> {
+            musicianInstrumentRepository.deleteById(musicianInstrument.getId());
+        });
+
+        musician.setInstruments(musicianInstruments);
+        musician.setGenres(genres);
+        musician.setUser(loggedUser);
+        loggedUser.setMusician(musician);
+        userRepository.save(loggedUser);
     }
 
 }

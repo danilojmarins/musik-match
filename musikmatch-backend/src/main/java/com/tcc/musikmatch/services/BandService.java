@@ -1,6 +1,7 @@
 package com.tcc.musikmatch.services;
 
 import com.tcc.musikmatch.dtos.AuthenticationResponseDTO;
+import com.tcc.musikmatch.dtos.BandEditDTO;
 import com.tcc.musikmatch.dtos.BandRecordDTO;
 import com.tcc.musikmatch.enums.BandType;
 import com.tcc.musikmatch.enums.Role;
@@ -13,6 +14,7 @@ import com.tcc.musikmatch.models.User;
 import com.tcc.musikmatch.repositories.GenreRepository;
 import com.tcc.musikmatch.repositories.InstrumentRepository;
 import com.tcc.musikmatch.repositories.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +92,47 @@ public class BandService {
 
         String jwtToken = jwtService.generateJwtToken(user);
         return new AuthenticationResponseDTO(jwtToken);
+    }
+
+    public void editBand(BandEditDTO bandEditDTO) {
+        User loggedUser = (User) SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getPrincipal()
+        ;
+
+        Band band = loggedUser.getBand();
+
+        band.setName(bandEditDTO.name());
+        band.setBio(bandEditDTO.bio());
+        band.setState(bandEditDTO.state());
+        band.setCity(bandEditDTO.city());
+        band.setLat(bandEditDTO.lat());
+        band.setLon(bandEditDTO.lon());
+
+        Set<Instrument> instruments = new HashSet<>();
+        bandEditDTO.instrumentsIds().forEach(id -> {
+            Instrument instrument = instrumentRepository
+                    .findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Instrumento não encontrado."))
+                    ;
+            instruments.add(instrument);
+        });
+
+        Set<Genre> genres = new HashSet<>();
+        bandEditDTO.genresIds().forEach(id -> {
+            Genre genre = genreRepository
+                    .findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Gênero não encontrado."))
+                    ;
+            genres.add(genre);
+        });
+
+        band.setInstruments(instruments);
+        band.setGenres(genres);
+        band.setUser(loggedUser);
+        loggedUser.setBand(band);
+        userRepository.save(loggedUser);
     }
 
 }

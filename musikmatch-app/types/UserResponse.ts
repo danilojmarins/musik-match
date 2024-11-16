@@ -13,5 +13,5 @@ export interface UserResponse {
     | null;
   bandInstruments: string[] | null;
   genres: string[];
-  role: "MUSICIAN" | "BAND" | "ADMIN";
+  role: "MUSICIAN" | "BAND";
 }

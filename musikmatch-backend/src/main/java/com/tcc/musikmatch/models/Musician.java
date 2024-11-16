@@ -43,7 +43,7 @@ public class Musician implements Serializable {
     @Column(nullable = false)
     private String city;
 
-    @OneToMany(mappedBy = "musician", cascade = { CascadeType.ALL})
+    @OneToMany(mappedBy = "musician", cascade = { CascadeType.ALL })
     private Set<MusicianInstrument> instruments = new HashSet<>();
 
     @ManyToMany

@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { UserResponse } from "@/types/UserResponse";
 import { apiAuth } from "@/config/api";
 import { AxiosError } from "axios";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
+import { router } from "expo-router";
 
 export default function User() {
 
@@ -13,8 +14,11 @@ export default function User() {
 
     const [user, setUser] = useState<UserResponse | null>(null);
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const getUser = async () => {
         try {
+            setLoading(true);
             const userData = await apiAuth.get<UserResponse>("/api/users/loggedUser");
             setUser(userData.data);
         }
@@ -22,6 +26,9 @@ export default function User() {
             if (error instanceof AxiosError) {
                 console.error(error.message);
             }
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -37,6 +44,19 @@ export default function User() {
         user && user.role === 'MUSICIAN' ? user.musicianInstruments?.map(instrument => instrument.name) :
         user && user.role === 'BAND' ? user.bandInstruments?.map(instrument => instrument) : []
     ;
+
+    if (loading) {
+        return (
+            <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <ActivityIndicator style={{ margin: 'auto' }} size={'large'} color={'#0000FF66'} />
+            </View>
+        )
+    }
 
     if (!user) {
         return (
@@ -70,6 +90,17 @@ export default function User() {
                     size={24}
                     color="#555"
                     style={{ position: 'absolute', top: 165, right: 20 }}
+                />
+
+                <MaterialIcons
+                    onPress={() => router.push({
+                        pathname: '/userEdit/[id]',
+                        params: { id: user.id } 
+                    })}
+                    name="edit"
+                    size={24}
+                    color="#555"
+                    style={{ position: 'absolute', top: 165, right: 64 }}
                 />
             </UserHeaderContainer>
 
